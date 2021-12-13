@@ -31,3 +31,7 @@
 - [Integration Architecture Designer](exam-based-certs/Integration-Architecture-Designer.md)
 - [Marketing Cloud Email Specialist](exam-based-certs/Marketing-Cloud-Email-Specialist.md)
 - Platform App Builder
+
+## Other Certifications
+
+- [JavaScript Developer I](exam-based-certs/JavaScript-Developer-I.md)
