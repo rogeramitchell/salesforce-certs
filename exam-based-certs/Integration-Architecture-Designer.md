@@ -16,23 +16,65 @@
 
 [**Measure Performance for Your Salesforce Org**](https://help.salesforce.com/articleView?id=sf.technical_requirements_measuring_ept.htm&type=5)
 
-
+- Make a sandbox, ideally a full copy, and have it be as close to production's metadata (and data-based config) as possible
+  - Draw a system diagram to visualize current and future state
+  - Estimate size and shape of data
+  - Sandboxes and production orgs may use different instances and hardware, and thus may have different performance 
+- Add `eptVisible` as parameter to app to measure Experienced Page Time (EPT)
+  - Lightning Component Debug Mode is not as reliable, may negatively impact performance
+  - Lightning Usage App (Activity or Usage tabs) displays data
+  - Create a custom report type to show Lightning Usage App objects
+    - `LightningUsageByAppTypeMetrics`
+    - `LightningUsageByBrowserMetrics`
+    - `LightningUsageByPageMetrics`
+    - `LightningUsageByFlexiPageMetrics`
+  - Also available with Event Monitoring Analytics App (prebuilt)
+- Also, leverage browser developer tools, Selenium, LoadRunner, or JMeter
 
 [**Congratulations! You Inherited a Mature Org...Now What?**](https://www.salesforce.com/video/1770820/)
 
-
+TODO
 
 [**Analyzing Your Org with Salesforce Optimizer**](https://admin.salesforce.com/blog/2017/analyzing-org-salesforce-optimizer-webinar-recap)
 
-
+- Salesforce Optimizer is available in Setup, analyzes customizations, creates a PDF report, assigns resources to learn more for each item
+- Helpful for
+  - Proactive maintenance
+  - Cleanup
+  - Improving user experience
+  - Moving to Lightning Experience
 
 [**Salesforce to Salesforce**](https://help.salesforce.com/articleView?id=sf.business_network_intro.htm&type=5)
 
-
+- Last Modified By is updated to Connection User if the other org updates your data
+- Assign permission set to control which users can manage connections and view/accept data from other orgs
+- Connection Finder assists with identifying who uses Salesforce (as a survey)
+  - Responses are logged on the Account and Contact records
+- Connection Templates define objects/fields to share with Connections (other orgs)
+- Objects supported for publishing
+  - Account
+  - Attachment (unencrypted)
+  - Case
+  - Case Comment
+  - Contact
+  - Lead
+  - Opportunity
+  - Opportunity Product
+  - Product
+  - Task
+  - Any custom objects
+- Subscription is the recipient side of a published object and its fields
+  - Map fields to whichever you'd like
+  - Auto-accept will run assignment rules for Lead and Case when creating data in subscriber's org
+  - Workflow rules will fire when accepting a parent record, child record is inserted, or a subscribed field triggers the workflow rule
+- Forward a record via External Sharing related list, but don't share it back to the org that shared with you
+  - Accept a forwarded record from the list view (if auto-accept is not enabled)
+  - Records that are no longer shared are not deleted from subscribers, but those orgs stop receiving updates
+  - At most 100 tasks can be shared
 
 [**Explore Integration Patterns and Practices**](https://trailhead.salesforce.com/en/content/learn/trails/explore-integration-patterns-and-practices?trailmix_creator_id=strailhead&trailmix_slug=architect-integration-architecture)
 
-
+- 
 
 [**Integration Architecture for the Salesforce Platform**](https://developer.salesforce.com/blogs/developer-relations/2014/11/salesforce-integration-architecture.html)
 
