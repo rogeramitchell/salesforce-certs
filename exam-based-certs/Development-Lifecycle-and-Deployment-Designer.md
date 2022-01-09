@@ -280,7 +280,7 @@ Notes for this are captured in the next two links, as this is a trail comprised 
 
 [**Tooling API Developer Guide**](https://developer.salesforce.com/docs/atlas.en-us.api_tooling.meta/api_tooling/intro_api_tooling.htm)
 
-- Use to build development tools or apps that work on metadata
+- Use to build development tools or apps that work on metadata and leverage 
 - The following tasks are good candidates for using the Tooling API
   - Retrieve metadata about an object's field
   - Retrieve custom or standard object properties
@@ -299,34 +299,99 @@ Notes for this are captured in the next two links, as this is a trail comprised 
   - Access code coverage results
   - Execute tests, and manage test results
   - Manage validation rules and workflow rules
-- 
+- Different types of objects
+  - Programming: Apex, Visualforce, Lightning, etc
+  - Setup: compact layouts, apps, etc
+  - Tooling: code coverage, logs, etc
+  - Operational: deployments, collections of metadata
+- Can leverage both SOQL and SOSL to find metadata
 
 [**Unit Testing on the Lightning Platform**](https://trailhead.salesforce.com/content/learn/modules/unit-testing-on-the-lightning-platform?trailmix_creator_id=strailhead&trailmix_slug=architect-dev-lifecycle-and-deployment)
 
-
+- Unit tests: tests code's ability to meet specific expected results at a granular level
+- Functional: tests code's ability to handle functionality
+- Integration: tests code's ability to integrate with other systems
+- Test data
+  - Within a test method itself (that is also asserting results from code)
+  - Create a factory that creates a set of records (as its own class, call methods to create from other places)
+  - `@TestSetup` method in the test class to ensure that each method has the same baseline, without requiring a call to factory to create test data
+  - Upload a CSV as Static Resource and use `Test.loadData` method to specify the SObjectType and the name of that data file
+- Positive tests: return expected result when presenting valid data to code
+- Negative tests: ensures that code handles invalid data, unexpected inputs, and etc
+- Permission based tests: create or leverage users with different profiles/permission sets and use `System.runAs` block to validate the code works as expected
+- Lightning Web Component tests: leverages Jest, which is adopted by Salesforce to test components in isolation, its `@api`, user interactions via clicks, and DOM + events output
+- Mocks and Stubs
+  - Mocks are object level: `Test.setMock` for things like validating callouts from `HttpCallout` in code
+  - Stubs are method level: `Test.setStub` to remove dependency on exactly how a method works when testing
 
 [**Package Development Readiness**](https://trailhead.salesforce.com/content/learn/modules/package-development-readiness?trailmix_creator_id=strailhead&trailmix_slug=architect-dev-lifecycle-and-deployment)
 
-
+- Unlocked packages are repeatable, scriptable, and trackable for managing changes in orgs
+- Packages are used to migrate changes between environments
+- Determine current state of programmatic and declarative customizations around
+  - Patterns (e.g. one trigger / flow per object)
+  - Logic (e.g. handler classes)
+  - Naming conventions
+  - Testing patterns and adherence to best practices
+  - Comments and descriptions
+  - API versions
 
 [**Unlocked Packages for Customers**](https://trailhead.salesforce.com/content/learn/modules/unlocked-packages-for-customers?trailmix_creator_id=strailhead&trailmix_slug=architect-dev-lifecycle-and-deployment)
 
-
+- Changes can occur to production with metadata included in unlocked package, although will be overwritten on next version installation (unless change is included in that version as well)
+- Create new packages via `force:package:create` with a path to the metadata
+- Create new package versions via `force:package:version:create` with a reference to the package `-p`
+- Package aliases are captured in `sfdx-project.json` with the accompanying IDs
+- Promote from beta to release via `force:package:version:promote` with the `-p` to the alias of that specific version
+- Use `force:package:install` with `--package` to the alias of that version that is desired for the given org
+- Three models for untangling into packages
+  - App-based (e.g. Commissions App, HR App)
+  - Customizations-based (e.g. Sales, Service, etc)
+  - Shared library (e.g. a base package that other packages leverage)
+- Package dependencies
+  - Unlocked packages can depend on AppExchange packages
+  - Unlocked packages can depend on other unlocked packages
+  - Unlocked packages can have deep dependencies on other unlocked packages 
 
 [**Quick Start: Unlocked Packages**](https://trailhead.salesforce.com/content/learn/projects/quick-start-unlocked-packages?trailmix_creator_id=strailhead&trailmix_slug=architect-dev-lifecycle-and-deployment)
 
-
+Basically same as module directly above
 
 [**Choose your tools for developing and deploying changes**](https://help.salesforce.com/articleView?id=sf.code_tools_ant.htm&type=5)
 
-
+- Dev Console
+- VS Code (via Salesforce Extensions)
+- Directly via Metadata API (meaning you can use whatever you want to author those pieces of metadata)
+- Ant Migration Tool: built on Apache Ant to assist with specific tasks, includes `build.properties` and `build.xml` files for credentials and tasks to execute respectively
+- Change Sets
 
 [**Continuous Integration**](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ci.htm)
 
-
+- Various sample repos exist for Org and Package Development Models
+  - AppVeyor
+  - Bamboo
+  - Bitbucket
+  - CircleCI
+  - GitLab
+  - Jenkins
+  - TravisCI
 
 [**Unlocked Packages**](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_unlocked_pkg_intro.htm)
 
-
+- Unlocked an org dependent uunlocekd packages are slightly different
+  - Org dependent are built for specific prod and sandbox orgs, only can be installed in orgs that have metadata on which the package relies
+- Namespace can be assigned to unlocked packages
+- `sfdx-project.json` file contains 
+  - Package dependencies, both managed and unlocked
+  - Metadata dependencies for Apex tests via permission sets and permission set licenses
+- Unlocked packages allow for deprecating metadata from the package or moving that metadata to a different unlocked package
+- Unlocked packages can be pushed to subscriber orgs via 2GP push upgrades
 
 [**Apex Metadata API**](https://trailhead.salesforce.com/content/learn/modules/apex_metadata_api?trailmix_creator_id=strailhead&trailmix_slug=architect-dev-lifecycle-and-deployment)
+
+- Supports page layouts and custom metadata types are supported currently
+- Metadata namespace can retrieve metadata from an org, update metadata, and deploy to an org
+- Can also be used to execute actions after a deployment occurs via `DeployCallback` interface
+- Good use is creating an admin friendly tool to manage custom metadata types for reference table style features (e.g. tax rates)
+- Setup => Apex Settings => Deploy Metadata from Non-Certified Package Versions via Apex allows non-certified packages (e.g. managed packages that have not gone through security review) to update an org; regardless will allow unmanaged and certified to modify
+- Use protected metadata to prevent other managed packages, your package's subcribers from viewing metadata
