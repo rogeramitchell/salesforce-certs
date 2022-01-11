@@ -10,27 +10,115 @@
 
 [**Identity Basics**](https://trailhead.salesforce.com/content/learn/modules/identity_basics?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Salesforce Identity handles the following
+  - Single sign-on: allows log via existing authenticated session
+  - Connected apps: authorized resources to which users have access
+  - Social sign-on: using social networks to log into an org
+  - Multi-factor authentication: additional layer of auth via tokens from a text message, email, app
+  - My Domain: unique to users to assist with security
+  - Centralized user account management: manage user accounts in once place (as attributes can be sent with auth requests)
+  - User provisioning: creates users in other orgs and services 
+  - Identity Connect: sync users and attributes from Active Directory (AD) to Salesforce
+  - App Launcher: presents connected apps for easily accessing other services (i.e. think tiles available in Okta)
+- Helps employees
+  - Convenience
+  - Control
+  - Security
+- Helps customers and partners
+  - User registration
+  - Brand control
+  - Social sign on, use existing accounts or phone/email (for OTP flows) 
+  - Seamless web experience
+  - One comprehensive view of user
+- SAML
+  - XML-based protocol that contains attributes in the SAML request
+- OAuth 2.0
+  - Open protocol for secure data sharing between apps or services
+  - Prompts user to allow specific set of scopes
+- OpenID Connect
+  - Authentication layer built on OAuth 2.0 to share user information
+- Salesforce as service provider: external identity management solution passes authenticated users to Salesforce
+- Salesforce as identify provider: authenticated users in Salesforce easily access other apps and services 
+- SAML flow
+  - User tries to access Salesforce
+  - Salesforce recognizes SSO request and generates SAML request
+  - Salesforce sends SAML request to browser
+  - Browser redirects SAML request to external identity provider
+  - Identify provider verifies user's identity and sends a SAML assert with user auth
+  - Identity provider sends SAML assertion to browser
+  - Browser redirects SAML assertion to Salesforce
+  - Salesforce verifies the assertion
+  - User can access Salesforce
+- Terms
+  - Authentication: who a person is
+  - Authorization: what a person can do
+  - Protocol: set of rules that enable systems to share data
+  - Standard: a spec or set of industry practices that orgs agree to follow
+  - Username/password, credentials: how a person logs into a system
+  - Single sign on: enables one login event that enables multiple apps with logging in again
+  - Social sign on: logging into an app with social media service
+  - Identity provider: trusted service that enables users to access apps and services without logging in again
+  - Service provider: hosts an app and accepts identity from an identity provider
 
 [**Identity and Access Management for Beginners**](https://www.youtube.com/watch?v=fcSXiUsU5lE)
 
-
+TODO
 
 [**User Authentication**](https://trailhead.salesforce.com/content/learn/modules/identity_login?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Multi factor auth combines something you know and have
+  - Know: username and password
+  - Have: mobile device, access to receive emails or texts to a predefined address; also can be a time based one-time password (TOTP) or physical security key
+- Identity Verification in Setup
+  - Allow location based automated verifications with Salesforce Authenticator, can enforce trusted IP ranges
+- My Domain has policies to 
+  - Prevent logging in from **login.salesforce.com**
+  - Redirecting to same page within domain, displaying warning, or not redirecting (if a person referenes an instance/pod instead of my domain)
+  - Customize login page type, auth methods, right side page, logo, and color
+- When setting up SSO with an external identity provider
+  - Set a Federation ID for each user
+  - Set up issuer and entity ID for the IdP in Salesforce
+  - Use the login URL that Salesforce providers to specify the recipient URL, entity ID (my domain URL typically)
 
 [**OAuth with Salesforce Demystified**](https://www.youtube.com/watch?v=zpToAGuhg60)
 
-
+TODO
 
 [**Salesforce Licensing**](https://trailhead.salesforce.com/content/learn/modules/salesforce-licensing?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Each org has at least one edition, which provides functionality to activate an org, but those editions must be the same level (e.g. Sales Cloud Unlimited and Service Cloud Unlimited)
+  - Edition has a mix of platform licenses and user licenses
+- Add ons have a mix of user licenses and permission set licenses
+- Settings are controlled via permissions and preferences
+- Components of how access to features are controlled
+  - Platform level permissions: specify what is possible for org
+  - Platform level preferences: specify what preferences are available for an org
+  - User level perms: specify what is possible for that user
+  - User level preferences: specify what that user prefers 
+- Profile and permission set combine platform level permissions and preferences, are assigend to users to provide user level perms and prefs
+- Can sync production org license changes to existing sandboxes from production via Match Production Licenses to Sandbox
 
 [**How to Provision Salesforce Communities Users**](https://developer.salesforce.com/blogs/developer-relations/2014/06/how-to-provision-salesforce-communities-users.html)
 
-
+- Contacts need to exist before a Community / Experience Cloud external user is created
+- Contacts linked to a 
+  - Person account can only be customers
+  - Non-partner business account can only be customers (until account is enabled as partner)
+  - Partner account can be either customers or partners
+- External users can be created via
+  - Salesforce license with Manage External Users, allows for creating users on Accounts to which the user has read access
+  - Partner Community, Partner Portal with Delegated External User Administrator on that external user's Account
+  - Customer Portal Manager, Customer Communities Plus with Delegated External User Administrator on that external user's Account
+- Partner users are role based, defined at account level, can have between 1-3 roles (defined for entire org on Experience Settings)
+- Users can either be provisioned:
+  - Manually
+  - Self register
+  - Created via SOAP or REST API
+  - Data Loader
+  - Social sign on
+  - SAML JIT (just in time)
+    - Requires `Account.Name`, `Account.AccountNumber`, `Account.Owner` (as 15 or 18 character ID), `Contact.LastName`, `Contact.Email`, `User.LastName`, `User.Email`, `User.Username`, `User.ProfileID`, `User.PortalRole`
+    - Attempts to match a user by Federation ID, then find a contact with matching email, then find an account by either name or account number fields; email has to be unique and the account owner must have a role
 
 [**Single Sign-On Implementation Guide**](https://developer.salesforce.com/docs/atlas.en-us.230.0.sso.meta/sso/sso_about.htm)
 
