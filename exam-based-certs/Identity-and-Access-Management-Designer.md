@@ -122,22 +122,87 @@ TODO
 
 [**Single Sign-On Implementation Guide**](https://developer.salesforce.com/docs/atlas.en-us.230.0.sso.meta/sso/sso_about.htm)
 
-
+TODO
 
 [**Deploying Single Sign-On and Identity for Employees, Customers, and Partners**](https://www.youtube.com/watch?v=swguz0ZKggM)
 
-
+TODO
 
 [**Auditing**](https://help.salesforce.com/articleView?id=sf.security_overview_auditing.htm&type=5)
 
-
+- Record Modification Fields
+  - Created By
+  - Last Modified by
+- Login History
+  - 6 months of successful and failed login history per user
+- Field History Tracking
+  - Tracks changes for up to 20 fields per object, some fields do not support old and new values
+- Setup Audit Trail
+  - Tracks modifications to the org (metadata)
 
 [**Shield Platform Encryption**](https://trailhead.salesforce.com/content/learn/modules/spe_admins?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Encrypt only where necessary
+- Backup and archive keys and data
+- Encryption applies to all users
 
 [**Secure Your Apps with Salesforce Shield**](https://trailhead.salesforce.com/en/content/learn/trails/shield?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
+- Event Monitoring
+  - EventLogFile records are accessible via
+    - Dev Console
+    - Salesforce's Event Log File Browser
+    - cURL
+    - Python
+- Event Monitoring Analytics App
+  - Event Monitoring offers app with prebuilt dashboards
+  - Identifies suspicious behavior, slow page perf, poor user adoption
+  - Event Monitoring comes with 10 Event Monitoring Analytics app licenses
+  - Enable from Setup => Event Monitoring Settings => View Event Log Data in Analytics Apps
+    - Assign Event Monitoring Analytics Admin to users that customize the apps and data flows
+    - Assign Event Monitoring Analytics User to viewers
+  - Allows for storing 1 to 30 days of data
+  - Leverage metrics like `CPU_TIME`, `DB_TOTAL_TIME`, `NUMBER_COLUMNS` to track report performance
+  - Set notifications when aggregate values exceed thresholds
+  - Can sync event monitoring datasets with other datasets for more meaningful reporting (e.g. Account datasets)
+- Real-Time Event Monitoring
+  - Requires Salesforce Shield or Salesforce Event Monitoring add-ons
+  - Can be used with Transaction Security to block actions and notify in real time
+  - Key Terms
+    - Event: anything that happens, like user clicks, record state changes, etc
+    - Event Monitoring: stores events in log files
+    - Event log file: standard object `EvetLogFile`, can be downloaded after 24 hours or hourly, stores up to 30 days of data
+    - Real-Time Event Monitoring: events in near real time, can be stored in Big Objects for auditing and reporting
+    - Real-Time Events: platform events that are streamed and stored in Big Objects, can be queried via SOQL or Async SOQL
+    - Standard Platform Events: RTEM uses standard platform events to which subscriptions can be established
+    - RTEM Objects: has ability to stream and store data, and enforce policies on that data
+    - Big Objects: store way more data this way than with event log files
+  - Different Event Types
+    - ApiAnonmalyEvent => stored => available in TSP
+    - BulkApiRequestEvent => stored => available in TSP
+    - ConcorLongRunApexErrEvent => not stored => not available for TSP
+    - CredentialStuffingEvent => stored => available in TSP
+    - IdentityVerificationEvent => stored => not available for TSP
+    - ListViewEventStream => stored => available in TSP
+    - LoginAsEventStream => stored => not available for TSP
+    - LoginEventStream => stored => available in TSP
+    - LogoutEventStream => stored => not available for TSP
+    - ReportAnomalyEvent => stored => available in TSP
+    - ReportEventStream => stored => available in TSP
+    - SessionHijackingEvent => stored => available in TSP
+  - View Real-Time Event Monitoring Data is required user permission
+  - Recommend querying Big Objects for data instead of subscring to past events from now to 3 days ago
+  - Use EMP Connector, open source tool to connect via CometD
+- Enhanced Transaction Security
+  - Setup => Transaction Security Policies to set up new policies
+  - Either use Condition Builder or Apex to create policies
+    - Condition Builder: choose an event, conditional logic, and associated actions along with notifications via email or in-app 
+    - Apex: choose an event, specify an Apex class, and associated actions along with notifications via email or in-app
+      - `TxnSecurity.EventCondition` is interface implemented, has `evaluate` method that returns boolean to define whether it triggers the action
+- Shield Platform Encryption (repeated from above section)
+  - Encrypt only where necessary
+  - Backup and archive keys and data
+  - Encryption applies to all users
 
 
 [**Customizing User Authentication with Login Flows**](https://www.youtube.com/watch?v=gYes8OLAc-k)
