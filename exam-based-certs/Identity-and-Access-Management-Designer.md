@@ -62,7 +62,22 @@
 
 [**Identity and Access Management for Beginners**](https://www.youtube.com/watch?v=fcSXiUsU5lE)
 
-TODO
+- Secure assets
+  - Least privilege
+  - Appropriate level of access
+  - Multi-factor auth
+- When things go wrong there are costs
+  - Direct
+    - Compromised customer / employee details, business plans, financial data, IP
+    - Downtime
+  - Indirect
+    - Fines and compensation
+    - Legal costs
+    - Reputation
+    - Share price
+- Two levels of security
+  - Generic: API access, custom permissions, Visualforce, ability to request fresh access tokens
+  - User and service specific: CRUD, FLS, record level sharing, system permissions, licensing
 
 [**User Authentication**](https://trailhead.salesforce.com/content/learn/modules/identity_login?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
@@ -82,7 +97,41 @@ TODO
 
 [**OAuth with Salesforce Demystified**](https://www.youtube.com/watch?v=zpToAGuhg60)
 
-TODO
+- Authentication vs authorization metaphor
+  - Authentication: hotel front desk confirms you are who you say you are, gives you a key
+  - Authorization: key provides access to scopes like room, pool, gym, etc
+- OAuth access token
+  - Request
+    - `code`
+    - `grant_type`
+    - `client_id`
+    - `client_secret`
+    - `redirect_url`
+  - Response
+    - `access_token`
+    - `instance_url`
+    - `id`
+    - `token_type`
+    - `issued_at`
+    - `signature`
+- OpenID Connect is authentication built on OAuth 2.0 (authorization)
+- Sample responses
+  - Raw response
+    - `id`
+    - `issued_at`
+    - `scope`
+    - `instance_url`
+    - `token_type`
+    - `refresh_token`
+    - `id_token`
+    - `signature`
+    - `access_token`
+  - Client app decodes to the following
+    - `exp`
+    - `sub`
+    - `aud`
+    - `iss`
+    - `iat`
 
 [**Salesforce Licensing**](https://trailhead.salesforce.com/content/learn/modules/salesforce-licensing?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
@@ -122,11 +171,48 @@ TODO
 
 [**Single Sign-On Implementation Guide**](https://developer.salesforce.com/docs/atlas.en-us.230.0.sso.meta/sso/sso_about.htm)
 
-TODO
+- Terms
+  - Federation Authentication: users login once to access many apps
+  - SAML: open standard authentication protocol
+  - Identity Provider: acts as trusted service to authenticate user identity
+  - Service Provider: provides client app to which the user wants to access
+  - SAML Request: SP sends to IdP to authenticate user
+  - SAML Response: IdP sends to SP after authentication occurs, has signed SAML assertion
+  - SAML Assertion: part of SAML response, asserts facts like username, email, etc
+  - JIT Provisioning: create a new user account when user accesses SP for the first time
+  - OpenID Connect: open standard authentication protocol built on OAuth 2.0
+  - Custom Authentication Protocol: general term for any custom authentication protocol that is used with an authorization service
+  - Authentication Provider: framework to connect Salesforce with authorization, authentication, or both
+  - Relying Party: SP in OpenID Connect land
+- Salesforce as SP
+  - Predefined Auth Provider
+    - Apple
+    - Facebook
+    - Google
+    - Janrain
+    - LinkedIn
+    - Microsoft Access Control
+    - Twitter
+  - Configure via OpenID Connect
+    - Amazon
+    - Azure AD
+- SAML SSO flows
+  - SP initiated
+    - User requests secure session to protected resource
+    - Service provider initiates login via SAML request to IdP
+    - IdP sends user to login page
+    - User authenticates to IdP
+    - IdP sends SAML response to SP
+    - SP validates signature and identifies user
+    - User is able to leverage protected resource of SP
+  - IdP initiated
+    - User authenticates to IdP
+    - User tries to access SP
+    - IdP sends SAML response to SP
+    - SP validates signature and identifies user
+    - User is able to leverage protected resource of SP
 
 [**Deploying Single Sign-On and Identity for Employees, Customers, and Partners**](https://www.youtube.com/watch?v=swguz0ZKggM)
-
-TODO
 
 [**Auditing**](https://help.salesforce.com/articleView?id=sf.security_overview_auditing.htm&type=5)
 
@@ -303,7 +389,39 @@ TODO
 
 [**OAuth Authorization Flows**](https://help.salesforce.com/articleView?id=sf.remoteaccess_oauth_flows.htm&type=5)
 
-TODO
+- OAuth flows
+  - Web Server
+    - Connected app directs user to Salesforce for auth and to authorize data ccess
+    - Salesforce sends auth code to app
+    - App sends auth code to Salesforce requesting token
+    - Salesforce validates code, sends back token
+    - App asks for data with access token
+    - Salesforce validates its allowed and passes data
+  - User Agent
+    - Connected app directs user to Salesforce
+    - Salesforce sends redirect URL with access and refresh tokens
+    - App uses 
+  - JWT Bearer
+    - Connected app sends JWT
+    - Salesforce validates JWT with signature and params
+    - Salesforce issues access token
+    - App asks for data with access token
+  - Device
+    - Connected app sends request to Salesforce
+    - Salesforce returns a code (e.g. 4-8 characters), verification URL (e.g. https://salesforce.com/activate), device code
+    - App starts polling Salesforce token endpoint to listen for auth
+    - User provides code at verification URL
+    - Salesforce sends access and refresh token to app
+    - App can do things
+  - Refresh Token
+    - Web Server and User Agent flows: refresh token allows for accessing new access token
+  - Username Password
+    - Requires high level of trust with this flow
+    - Returns access token, scopes are not supported
+  - SAML Bearer
+    - App uses SAML assertion to get access token
+  - SAML Assertion
+    - Allows access to web services via SAML assertion
 
 [**OAuth With Salesforce Demystified**](https://www.youtube.com/watch?v=zpToAGuhg60&t=540s&ab_channel=SalesforceDevelopers)
 
@@ -396,7 +514,9 @@ TODO
 
 [**Build a Connected App for API Integration**](https://trailhead.salesforce.com/content/learn/projects/build-a-connected-app-for-api-integration?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-TODO
+- Connected App => Enable OAuth Settings
+  - Permitted Users is either all may self-approve or only admin approved users are pre-authorized via profile
+  - IP Relaxation enfores the IP restrictions for org, could be relaxed for refresh tokens, or pre-activated devices, or not have any restrictions at all
 
 [**Configuring SAML SSO for a Canvas App**](https://developer.salesforce.com/docs/atlas.en-us.sso.meta/sso/sso_examples_canvas.htm)
 
@@ -435,7 +555,14 @@ TODO
 
 [**Multi-Factor Authentication**](https://help.salesforce.com/articleView?id=security_overview_2fa.htm&type=0)
 
-TODO
+- Salesforce will require MFA for all users logging in via Salesforce UI
+- Methods for MFA
+  - Salesforce Authenticator
+  - Use Touch ID, Face ID, or similar as built-in auth (beta)
+  - Register U2F security key
+  - Verify with TOTP authenticator app
+- Click Disconnect to remove any of those methods above if a user has already connected
+- Able to create a temporary verification code manually on user record via Temporary Verification Code, and can expire that code as well
 
 [**Session-Based Permission Sets and Security**](https://trailhead.salesforce.com/content/learn/modules/session_based_perms?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
@@ -462,43 +589,198 @@ TODO
     - Enable user switching 
     - Remember me until logout
     - Enable CDN for Lightning Component framework (uses Akamai to load Salesforce's framework)
-
-TODO: pickup at Clickjack Protection Settings
+  - Clickjack Protection Settings
+    - Enable clickjack protection for customer VF pages with standard headers or headers disabled
+    - Allow iframes on trusted external domains if necessary
+  - Cross-Site Request Forgery (CSRF)
+    - Automatically protected with random string of characters in URL parameter or hidden form field for GET and POST requests respectively
+  - Content Security Policy Protection
+    - Override resriction on accessing email templates in Salesforce Classic Using IE
+    - Enable Stricter Content Security Policy to avoid using `unsafe-inline` for `script-src`
+  - Extra Protection
+    - Enable XSS to avoid cross site scripting 
+    - Enable Content Sniffing protection to prevent browser from inferring MINME type, executing JS / CSS as dynamic content
+    - Hide this site's URL from other web sites (including VF pages) shows only Salesforce.com instead of entire URL in referred header when pages load
+    - Warn users before they are redirected outside of Salesforce shows warning when leaving Salesforce
+  - Session Security Levels: standard or high assurance
+    - Username and Password
+    - Delegated Auth
+    - Activation
+    - Lightning Login
+    - Passwordless Login
+    - Multi-Factor Auth
+    - Auth Provider
+    - SAML
+  - High Assurance Settings
+    - Can be required for reports, dashborads, and connected apps
+  - Logout Page Settings
+    - Used only if Logout URL is blank for IdP, SAML SSO, or third party auth
+  - Session Settings for New User Email
+    - Link expires in 1, 7, o 180 days; applies to existing links
+- Enable Browser Security Settings
+  - Referrer URL Protection: referrer header shows only Salesforce/Force.com URL
+  - Public Key Pinning: supported by Chrome and Firefox, monitors which SSL certs a user can see
+  - HSTS Protection: redirects browsers to use HTTPS and cannot be disabled
+- Setup => Network Access
+  - Defines list of IP addresses from which users log in without verifying their identity (i.e. MFA)
+- Setup => Identity Verification
+  - Require High Assurance Session Security for Sensitive Operations
+  - Define policy leevls for a variety of pages along with Reports and Dashboards, either raising to high assurance or blocking user
+- Can revoke sessions on per user basis 
+- Setup => Session Management
+  - View sesssion types for specific user 
+- Use frontdoor.jsp to bridge an existing session
+  - Parse session ID from serverUrl of the LoginResult returned from SOAP API `login()` call via POST request with `sid` and optionally `retURL` 
+  - OAuth 2.0 Hybrid App Token Flow can use POST request to frontdoor.jsp with `directBridge2=true` parameter, which passes access token to session ID cookie
+  - `access_token` is a full session ID when obtained from OAuth, will need either `web` or `full` scope in connected app definition
 
 [**Standard User Licenses**](https://help.salesforce.com/articleView?id=users_license_types_available.htm&type=5)
 
-
+- Salesforce: full access to CRM and AppExchange apps
+- Knwoeldge User Only: only provides access to articles, article management, chatter, files, home, profile, reports, custom objects, custom tabs
+- Identity Only: provides SSO access to other apps via Salesforce
+- External Identity: enables customers/partners to self register, securely access web and mobile apps 
+- WDC Only User: for those orgs that are still using Work.com
+- Salesforce Platform: custom apps, not full CRM activity, does not have access to forecasts, leads, campaigns, opps, etc
+- Lightning Platform - One App: only one app, 10 custom objects at most, read only for accounts and contacts, unlimited number of tabs
+- Force.com - App Subscription: one app, 10 custom objects, read only for accounts and contacts, 10 tabs, can only view dashboards if running user has same license; not technically monitored by Salesforce, is contractual in nature
+- Company Community User: employee communities, files, chatter, Experience Cloud site, 10 custom objects, 10 tabs, activities, tasks, calendar, events, accounts, contacts, cases, documents
+- Developer: provides one dev sandbox, scratch org, access to Dev Hub
 
 [**Identity Connect Basics**](https://trailhead.salesforce.com/content/learn/modules/identity_connect?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Syncs changes from Active Directory to Salesforce
+- Provisions users for onboarding and offboarding automatically
+- Set up SSO to allow users to access Salesforce via AD credentials
+- Use Data Source tab to map base contexts, user and group filters by Objectclasses
+- Map Salesforce user attributes to AD, default value, or a transformation script
+- Able to map permissions and access based on AD group
+  - Profile to AD Group
+  - User Role to AD Group
+  - Permission Set to AD Group
+  - Group (i.e. public group) to AD Group
+- Deployment
+  - On-premise, AD communicates via LDAP(S), and Identity Connect needs to communicate to Salesforce via HTTPS (DMZ is likely place to put Identity Connect)
+  - Can support multiple Salesforce orgs
+  - Can support multiple AD domains, although needs to aggregate via global catalog prior to entering Identity Connect or use multiple instances of Identity Connect
+  - An instance of Identity Connect can support either production or sandbox instances, but not a mix of both
 
 [**Deploying Single Sign-on and Provisioning for Active Directory**](https://www.youtube.com/watch?v=kNRHsHcphg0&t=491s)
 
-
-
 [**Identity for Customers**](https://trailhead.salesforce.com/content/learn/modules/identity_external?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- With Person Accounts enabled, ensure that an Experience has registration page configuration with a blank Account, which will ensure that newly created external users are created as Person Accounts
+- Records are created in this order
+  - Person account
+  - Contact
+  - User
 
 [**Identity for Mobile-Centric Customers**](https://trailhead.salesforce.com/content/learn/modules/identity-for-mobile-centric-customers?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Mobile first identity for these licenses
+  - External Identity
+  - Customer Community
+  - Customer Community Plus
+  - Partner Community
+  - Lightning External Apps
+  - Lightning External Apps Plus
+- Available with email verification for free, can provide text messaging for add-on license of Identity Verification Credits
+- Login Discovery supports both password and passwordless login methods, so that is ideal page for login/self registration
+- Customize login discovery handler for social sign-on
+  - Set up Auth Providers (for social networks, as example)
+  - Locate SSO URLs for that network
+  - Check `ThirdPartyAccountLink` SObject to see if the `Handle` matches that user's email
+    - If so, redirect user via `PageReference` to the associated `AuthProvider.SsoKickoffUrl` for that social platform
+  - Also can use `requestAttributes` to find details like
+    - `CommunityUrl`
+    - `IpAddress`
+    - `UserAgent`
+    - `Platform`
+    - `City`
+    - `Country`
+    - `Subdivison` (state/province)
+- Use these reports report types to track usage
+  - Verification History 
+  - Identity Verification Methods
 
 [**Connecting To Your Customers Across Every Channel With Salesforce Identity**](https://www.salesforce.com/video/1778176/)
 
-
+- Create login flow to inject terms of service, new features, etc based on checking the user
+- Setup => Login Flow, map that to a user profile
+- Various input variables are available in the flow
+  - `LoginFlow_LoginType`
+  - `LoginFlow_IpAddress`
+  - `LoginFlow_UserAgent`
+  - `LoginFlow_Platform`
+  - `LoginFlow_Application`
+  - `LoginFlow_Community`
+  - `LoginFlow_SessionLevel`
+  - `LoginFlow_UserId`
+- Experience ID `{expid}` can be injected into the logo URL, right frame URL within Experience => Administration => Login & Registration, and that would map to a different piece of content in CMS
+- Dynamic branding is possible with a single community that supports many brands
+- `Site.getExperienceId()` allows for this on Apex side
+- Setup => CORS to ensure that Salesforce is allowed to communicate with an external site (e.g. your ecommerce store)
+- Setup => Connected App to setup OAuth app with a client ID and callback URL that is added to the external client app's code to assist with Embedded Login 
+- Salesforce Identity components in action
+  - Quick and easy registration => Auth Providers
+  - Social Sign On => Auth Providers
+  - Create Accounts, Contacts, Users => Registration Handlers (Apex)
+  - Progressive profiling and consent => Login Flow
+  - No browser redirects => Embedded Login
+  - Multiple brands in single org => Dynamic Branding
 
 [**Salesforce Data Mask**](https://trailhead.salesforce.com/content/learn/modules/salesforce-data-mask?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Data Mask is an add on product to assist with PII and NPI in sandboxes
+- Masking
+  - Random (e.g. Suzy Peters => jdsfjsf sdfsfsdfsdf)
+  - Familiar Values (e.g. John Doe => Janet Smith)
+  - Pattern generated (e.g. maria@example123.com => person@word567.com)
+  - Delete
+- Exists as a managed package that is installed in production org
+- Org level settings
+  - Anonymize case comments
+  - Delete all records from `EmailMessage` sobject
+  - Delete all Chatter activity
+- Define filter criteria for the data that should be masked
+- Data Mask disables automation when running
+  - Triggers
+  - Workflow rules
+  - Validation rules
+  - Flows
+  - Field history tracking
+  - Feed tracking
+- Considerations
+  - Required fields need values
+  - Records that conflict with duplicate rules are skipped
+  - Workflow rules, triggers, and validation rules in managed packages are not deactivated
+  - Serial mode can be used if there are errors
 
 [**Secure Secrets Storage**](https://trailhead.salesforce.com/content/learn/modules/secure-secrets-storage?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Storage for application secrets
+  - Named Credentials
+  - Custom Settings
+  - Custom Metadata Types
+- Protected means not available to subscriber orgs, only via logging in as managed package publisher
+- Custom Settings vs Metadata Types
+  - Setting: secret must be updated frequenty and available immediately (e.g. not in a subsequent release)
+  - Metadata Type: deployable, easily migratable
+- `Crypto` class
+  - Encrypts and decrypts per AES 128, 192, 256 bit algos
+  - Hash digests using MD5, SHA1, SHA256, SHA512
+  - Hash-based message authentication codes for authenticity and integrity
+  - Digital signatures
 
 [**Secure Salesforce Configuration**](https://trailhead.salesforce.com/content/learn/modules/secure-salesforce-configuration?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
 
-
+- Health Check is a dashboard to show ranking of 0-100 for how secure the org is
+- Provides a set of recommendations to implement
+- Salesforce Shield provides
+  - Platform Encryption
+  - Event Monitoring
+  - Field Audit Trail
 
 [**Security Awareness and Training**](https://trailhead.salesforce.com/content/learn/modules/security-awareness-and-training?trailmix_creator_id=strailhead&trailmix_slug=architect-identity-and-access-management)
+
+- Assist with stakeholder buy in on being a security minded organization
