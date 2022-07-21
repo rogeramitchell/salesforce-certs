@@ -35,3 +35,4 @@
 ## Other Certifications
 
 - [JavaScript Developer I](exam-based-certs/JavaScript-Developer-I.md)
+- Business Analyst
